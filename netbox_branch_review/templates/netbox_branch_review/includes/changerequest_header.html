@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="col-md-8">
+    <h1>CR#{{ object.pk }} — {{ object.title }}</h1>
+    <p>Status: <strong>{{ object.get_status_display }}</strong> | Branch: {{ object.branch }}</p>
+  </div>
+  <div class="col-md-4 text-right">
+    <form method="post" action="{% url 'plugins:netbox_branch_review:changerequest_approve' pk=object.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Approve</button>
+    </form>
+    <form method="post" action="{% url 'plugins:netbox_branch_review:changerequest_merge' pk=object.pk %}" style="margin-top: .5rem;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-success">Merge</button>
+    </form>
+  </div>
+</div>
