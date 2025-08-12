@@ -1,9 +1,108 @@
 {% extends 'generic/object.html' %}
+{% load helpers %}
+
 {% block content %}
-  {% include 'netbox_branch_review/includes/changerequest_header.html' %}
-  <div class="panel panel-default">
-    <div class="panel-body">
-      <p>{{ object.summary|linebreaksbr }}</p>
+
+  <div style="margin-bottom: 0.75rem;">
+    {# Using single-line if to avoid multiline parsing issues #}
+    {% if perms.netbox_branch_review.approve_changerequest and object.status != "approved" and object.status != "implemented" %}
+      <form method="post"
+            action="{% url 'plugins:netbox_branch_review:changerequest_approve' pk=object.pk %}"
+            style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-success">Approve</button>
+      </form>
+    {% endif %}
+
+    {% if perms.netbox_branch_review.peer_review_changerequest and object.status != "approved" and object.status != "implemented" %}
+      <form method="post"
+            action="{% url 'plugins:netbox_branch_review:changerequest_peer_review' pk=object.pk %}"
+            style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-secondary">Peer Review</button>
+      </form>
+    {% endif %}
+
+    {% if perms.netbox_branch_review.merge_changerequest and object.status == "approved" and object.branch_id %}
+      <form method="post"
+            action="{% url 'plugins:netbox_branch_review:changerequest_merge' pk=object.pk %}"
+            style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-primary">Merge / Implement</button>
+      </form>
+    {% endif %}
+
+    {# Revoke approvals (undo) - Django template if doesn't support parentheses grouping reliably; use nested blocks #}
+    {% if perms.netbox_branch_review.revoke_changerequest and object.status != "implemented" %}
+      {% if object.approver_1 or object.approver_2 %}
+        <form method="post"
+              action="{% url 'plugins:netbox_branch_review:changerequest_revoke' pk=object.pk %}"
+              style="display:inline;"
+              onsubmit="return confirm('Revoke recorded approvals and reset status to Pending?');">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sm btn-warning">Revoke Approvals</button>
+        </form>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  <div class="row">
+    <div class="col col-md-4">
+      <table class="table table-hover attr-table">
+        <tr><th>Title</th><td>{{ object.title }}</td></tr>
+        <tr><th>Status</th><td>{{ object.get_status_display }}</td></tr>
+        <tr><th>Requested By</th><td>{{ object.requested_by|placeholder }}</td></tr>
+        <tr><th>Planned Window</th><td>{{ object.planned_start|placeholder }} → {{ object.planned_end|placeholder }}</td></tr>
+        <tr><th>Risk</th><td>{{ object.risk|placeholder }}</td></tr>
+        <tr><th>Impact</th><td>{{ object.impact|placeholder }}</td></tr>
+        <tr><th>Target Object</th><td>{% if object.target %}{{ object.target }}{% else %}<span class="text-muted">None</span>{% endif %}</td></tr>
+        <tr><th>Branch</th><td>{% if object.branch %}{{ object.branch }}{% else %}<span class="text-muted">None</span>{% endif %}</td></tr>
+        <tr>
+          <th>Approvals</th>
+          <td>
+            {% if object.approvers_required == 2 %}
+              {% if object.approver_1 %}{{ object.approver_1 }} @ {{ object.approver_1_at }}{% else %}<span class="text-muted">Pending</span>{% endif %}<br/>
+              {% if object.approver_2 %}{{ object.approver_2 }} @ {{ object.approver_2_at }}{% else %}<span class="text-muted">Pending</span>{% endif %}
+            {% else %}
+              {% if object.approver_1 %}{{ object.approver_1 }} @ {{ object.approver_1_at }}{% else %}<span class="text-muted">Pending</span>{% endif %}
+            {% endif %}
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="col col-md-8">
+      <h4>Summary</h4>
+      <div class="card"><div class="card-body">{{ object.summary|placeholder }}</div></div>
+
+      <h4 style="margin-top:1rem;">Pending Branch Changes</h4>
+      <div class="card"><div class="card-body">
+        {% if object.branch %}
+          {% if unmerged_changes_count > 0 %}
+            <ul style="margin-bottom:0;">
+              {% for c in unmerged_changes|slice:":20" %}
+                <li>{{ c }}</li>
+              {% endfor %}
+            </ul>
+            {% if unmerged_changes_count > 20 %}
+              <div class="text-muted" style="margin-top:4px;">… and {{ unmerged_changes_count|add:-20 }} more</div>
+            {% endif %}
+          {% else %}
+            <span class="text-muted">No pending changes.</span>
+          {% endif %}
+        {% else %}
+          <span class="text-muted">No branch attached.</span>
+        {% endif %}
+      </div></div>
+
+  <h4 style="margin-top:1rem;">Activity</h4>
+      <div class="card"><div class="card-body">
+        {% for log in object.audit_logs.all|slice:":10" %}
+          <span class="badge bg-info text-dark" style="margin:2px;">{{ log.created|date:"Y-m-d H:i" }} - {{ log.get_action_display }} by {{ log.user }}</span><br/>
+        {% empty %}
+          <span class="text-muted">No activity yet.</span>
+        {% endfor %}
+      </div></div>
     </div>
   </div>
 {% endblock %}

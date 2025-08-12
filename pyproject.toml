@@ -5,15 +5,15 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "netbox-branch-review"
 version = "0.1.0"
-description = "Branch approval gate for NetBox using netbox-branching"
-authors = [{name = "Sunwire NOC", email = "noc@sunwire.ca"}]
-readme = "README.md"
+description = "Branch Review for NetBox"
 requires-python = ">=3.10"
-dependencies = [
-  "Django>=4.2,<5",
-  "netbox-plugin-extensions>=1.9",
-]
+
+[tool.setuptools]
+include-package-data = true
+[tool.setuptools.package-data]
+"netbox_branch_review" = ["templates/**/*.html"]
 
 [tool.setuptools.packages.find]
-where = [""]
+where = ["."]
 include = ["netbox_branch_review*"]
+namespaces = false

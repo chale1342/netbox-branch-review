@@ -22,7 +22,6 @@ class ChangeRequest(NetBoxModel):
     planned_end = models.DateTimeField(null=True, blank=True)
     risk = models.CharField(max_length=64, blank=True)
     impact = models.CharField(max_length=64, blank=True)
-    ticket = models.CharField(max_length=100, blank=True, help_text="External ticket or issue reference")
     object_type = models.ForeignKey(ContentType, on_delete=models.PROTECT, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     target = GenericForeignKey("object_type", "object_id")
@@ -37,8 +36,6 @@ class ChangeRequest(NetBoxModel):
         permissions = (
             ("approve_changerequest", "Can approve change request"),
             ("merge_changerequest", "Can merge branch for change request"),
-            ("peer_review_changerequest", "Can peer review change request"),
-            ("revoke_changerequest", "Can revoke approvals on change request"),
         )
 
     def get_absolute_url(self):
@@ -50,27 +47,3 @@ class ChangeRequest(NetBoxModel):
     def approvers_required(self):
         from django.conf import settings
         return 2 if settings.PLUGINS_CONFIG.get("netbox_branch_review", {}).get("require_two_approvals", True) else 1
-
-
-class ChangeRequestAudit(models.Model):
-    ACTION_CHOICES = (
-        ("approve_level1", "First approval"),
-        ("approve_level2", "Second approval"),
-        ("peer_review", "Peer review"),
-        ("merge", "Merge / implement"),
-        ("double_approval_blocked", "Blocked duplicate approval"),
-    ("revoke_level1", "Revoke first approval"),
-    ("revoke_level2", "Revoke second approval"),
-    ("revoke_full", "Revoke full approval"),
-    )
-    change_request = models.ForeignKey(ChangeRequest, on_delete=models.CASCADE, related_name="audit_logs")
-    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="change_request_audits")
-    action = models.CharField(max_length=32, choices=ACTION_CHOICES)
-    message = models.TextField(blank=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ("-created",)
-
-    def __str__(self):
-        return f"CR#{self.change_request_id} {self.action} by {self.user} @ {self.created}"
