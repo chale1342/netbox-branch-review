@@ -7,6 +7,26 @@ name = "netbox-branch-review"
 version = "0.1.7"
 description = "Branch Review for NetBox"
 requires-python = ">=3.10"
+readme = "README.md"
+authors = [ { name = "Chris Hale" } ]
+license = { text = "MIT" }
+keywords = ["netbox", "plugin", "change-management", "branch", "review", "approval"]
+classifiers = [
+	"License :: OSI Approved :: MIT License",
+	"Framework :: Django",
+	"Framework :: Django :: 5",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.10",
+	"Operating System :: OS Independent",
+	"Intended Audience :: System Administrators",
+	"Topic :: System :: Systems Administration",
+	"Topic :: Internet :: WWW/HTTP"
+]
+
+[project.urls]
+Homepage = "https://github.com/chale1342/netbox-branch-review"
+Source = "https://github.com/chale1342/netbox-branch-review"
+Issues = "https://github.com/chale1342/netbox-branch-review/issues"
 
 [tool.setuptools]
 include-package-data = true

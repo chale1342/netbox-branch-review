@@ -23,9 +23,9 @@ Branch-aware merge approval system for NetBox that gates branch merges until a C
 - Python 3.10+
 
 ## Installation
-1) Install the plugin (editable install during development):
+1) Install the plugin:
 ```sh
-pip install -e .
+pip install netbox-branch-review 
 ```
 
 2) Enable in NetBox configuration.py:
