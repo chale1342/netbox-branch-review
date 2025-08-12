@@ -16,8 +16,6 @@ Branch-aware merge approval system for NetBox that gates branch merges until a C
 - API serializers/viewset for integration
 - Optional peer review action & audit log of approvals / merge events
  - Revoke (undo) approvals before implementation, resetting status to Pending
-- Optional ticket field for external issue tracking
-- Tag CRs for organization (uses NetBox tags)
 
 ## Requirements
 - NetBox 4.x
@@ -33,9 +31,8 @@ pip install -e .
 2) Enable in NetBox configuration.py:
 ```python
 PLUGINS = [
-    # If using branch enforcement:
-    "netbox_branching",
     "netbox_branch_review",
+    "netbox_branching",
 ]
 
 PLUGINS_CONFIG = {

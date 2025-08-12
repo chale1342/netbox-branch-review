@@ -3,7 +3,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
-from netbox.models import NetBoxModel
+from netbox.models import PrimaryModel
 from .choices import CRStatusChoices
 
 try:
@@ -13,14 +13,11 @@ except Exception:
 
 User = get_user_model()
 
-class ChangeRequest(NetBoxModel):
-    def get_changelog_url(self):
-        return None
-
-    def get_journal_url(self):
-        return None
+class ChangeRequest(PrimaryModel):
     title = models.CharField(max_length=200)
     summary = models.TextField(blank=True)
+    description = models.CharField(max_length=200, blank=True)
+    comments = models.TextField(blank=True)
     requested_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="change_requests_created")
     status = models.CharField(max_length=32, choices=CRStatusChoices, default=CRStatusChoices.PENDING)
     planned_start = models.DateTimeField(null=True, blank=True)
@@ -55,6 +52,20 @@ class ChangeRequest(NetBoxModel):
     def approvers_required(self):
         from django.conf import settings
         return 2 if settings.PLUGINS_CONFIG.get("netbox_branch_review", {}).get("require_two_approvals", True) else 1
+
+    def get_changelog_url(self):
+        return None
+
+    def get_journal_url(self):
+        return None
+
+    @property
+    def changelog_url(self):
+        return None
+
+    @property
+    def journal_url(self):
+        return None
 
 
 class ChangeRequestAudit(models.Model):

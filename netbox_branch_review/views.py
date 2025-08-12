@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
 from django.views import View
+from django.http import Http404
 from django.conf import settings
 from netbox.views import generic
 from .models import ChangeRequest, ChangeRequestAudit
@@ -158,3 +159,15 @@ class ChangeRequestRevokeView(PermissionRequiredMixin, View):
 
 class ChangeRequestDeleteView(generic.ObjectDeleteView):
     queryset = ChangeRequest.objects.all()
+
+
+class _PlaceholderView(View):
+    """Return 404 for deprecated/disabled routes (changelog/journal)."""
+    def get(self, request, *args, **kwargs):  # pragma: no cover - simple stub
+        raise Http404()
+    def post(self, request, *args, **kwargs):  # safety
+        raise Http404()
+
+# Exposed as class names for URLConf clarity
+ChangeRequestChangelogView = _PlaceholderView
+ChangeRequestJournalView = _PlaceholderView

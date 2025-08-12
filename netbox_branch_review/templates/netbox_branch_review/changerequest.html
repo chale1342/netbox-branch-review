@@ -1,6 +1,10 @@
 {% extends 'generic/object.html' %}
 {% load helpers %}
 
+{# Suppress default NetBox object tabs (including changelog & journal) by overriding the tab blocks with empty content #}
+{% block tabs %}{% endblock %}
+{% block subheader %}{% endblock %}
+
 {% block content %}
 
   <div style="margin-bottom: 0.75rem;">

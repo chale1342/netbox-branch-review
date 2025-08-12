@@ -30,6 +30,7 @@ class Migration(migrations.Migration):
                 ("last_updated", models.DateTimeField(auto_now=True, null=True)),
                 ("title", models.CharField(max_length=200)),
                 ("summary", models.TextField(blank=True)),
+                # Added in 0002 for PrimaryModel compatibility; kept separate to avoid breaking existing deployments
                 (
                     "status",
                     models.CharField(
