@@ -21,7 +21,7 @@ Branch-aware merge approval system for NetBox that gates branch merges until a C
 
 ## Requirements
 - NetBox 4.x
-- Optional: netbox-branching plugin for branch operations (the merge gate integrates with it)
+- Netbox-Branching plugin for branch operations (the merge gate integrates with it)
 - Python 3.10+
 
 ## Installation

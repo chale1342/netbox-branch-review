@@ -14,6 +14,11 @@ except Exception:
 User = get_user_model()
 
 class ChangeRequest(NetBoxModel):
+    def get_changelog_url(self):
+        return None
+
+    def get_journal_url(self):
+        return None
     title = models.CharField(max_length=200)
     summary = models.TextField(blank=True)
     requested_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="change_requests_created")
