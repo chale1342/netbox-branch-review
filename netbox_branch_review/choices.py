@@ -1,5 +1,6 @@
 from utilities.choices import ChoiceSet
 
+
 class CRStatusChoices(ChoiceSet):
     key = "ChangeRequest.status"
 

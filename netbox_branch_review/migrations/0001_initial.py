@@ -18,14 +18,25 @@ class Migration(migrations.Migration):
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("contenttypes", "0002_remove_content_type_name"),
         ("netbox_branching", "0001_initial"),
-        ("extras", "0129_fix_script_paths"),  # ensure Tag/TaggedItem & JSON encoder ready
+        (
+            "extras",
+            "0129_fix_script_paths",
+        ),  # ensure Tag/TaggedItem & JSON encoder ready
     ]
 
     operations = [
-    migrations.CreateModel(
+        migrations.CreateModel(
             name="ChangeRequest",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("created", models.DateTimeField(auto_now_add=True, null=True)),
                 ("last_updated", models.DateTimeField(auto_now=True, null=True)),
                 ("title", models.CharField(max_length=200)),
@@ -51,7 +62,14 @@ class Migration(migrations.Migration):
                 ("planned_end", models.DateTimeField(blank=True, null=True)),
                 ("risk", models.CharField(blank=True, max_length=64)),
                 ("impact", models.CharField(blank=True, max_length=64)),
-                ("ticket", models.CharField(blank=True, max_length=100, help_text="External ticket or issue reference")),
+                (
+                    "ticket",
+                    models.CharField(
+                        blank=True,
+                        max_length=100,
+                        help_text="External ticket or issue reference",
+                    ),
+                ),
                 ("object_id", models.PositiveIntegerField(blank=True, null=True)),
                 ("approver_1_at", models.DateTimeField(blank=True, null=True)),
                 ("approver_2_at", models.DateTimeField(blank=True, null=True)),
@@ -101,8 +119,22 @@ class Migration(migrations.Migration):
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
-                ("branch", models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name="change_requests", to="netbox_branching.branch")),
-                ("tags", taggit.managers.TaggableManager(through="extras.TaggedItem", to="extras.Tag")),
+                (
+                    "branch",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="change_requests",
+                        to="netbox_branching.branch",
+                    ),
+                ),
+                (
+                    "tags",
+                    taggit.managers.TaggableManager(
+                        through="extras.TaggedItem", to="extras.Tag"
+                    ),
+                ),
             ],
             options={
                 "ordering": ("-created",),
@@ -117,7 +149,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="ChangeRequestAudit",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 (
                     "change_request",
                     models.ForeignKey(

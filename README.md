@@ -82,10 +82,10 @@ python manage.py sync_change_review --no-peer-group
 Config key: `require_two_approvals` (default True)
 Self full approval: `allow_self_full_approval` (default True) lets the CR creator (who has approval permission) fully approve in one action even when two approvals are normally required (records both levels in audit with an implicit second approval entry).
 
-| Scenario | Action 1 | Action 2 | Status progression |
-|----------|----------|----------|--------------------|
+| Scenario               | Action 1                                                                      | Action 2                                                                     | Status progression                                                  |
+| ---------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------- |
 | Two approvals required | First approval (different user recorded, or creator self-approval if allowed) | Second approval (must be different user unless self full approval triggered) | Pending → In review → Approved (or direct to Approved if self full) |
-| Single approval mode | First approval | (Further approvals blocked for same user) | Pending → Approved |
+| Single approval mode   | First approval                                                                | (Further approvals blocked for same user)                                    | Pending → Approved                                                  |
 
 Peer Review (optional): A user with only `peer_review_changerequest` can record a peer review before approval. Peer reviews do NOT change status; they are logged for audit & visibility.
 
@@ -98,12 +98,12 @@ The merge gate validator [`require_cr_approved_before_merge`](netbox_branch_revi
 ## Permissions & Suggested Groups
 Custom permissions defined on the model: [`ChangeRequest.Meta.permissions`](netbox_branch_review/models.py)
 
-| Codename | Purpose |
-|----------|---------|
-| approve_changerequest | Perform L1/L2 approvals (depending on config) |
-| merge_changerequest | Execute merge / implement action |
-| peer_review_changerequest | Record a peer review (no status change) |
-| revoke_changerequest | Revoke existing approvals (pre-implementation) |
+| Codename                  | Purpose                                        |
+| ------------------------- | ---------------------------------------------- |
+| approve_changerequest     | Perform L1/L2 approvals (depending on config)  |
+| merge_changerequest       | Execute merge / implement action               |
+| peer_review_changerequest | Record a peer review (no status change)        |
+| revoke_changerequest      | Revoke existing approvals (pre-implementation) |
 
 Because NetBox’s Group UI currently only lists standard model permissions in the multiselect, custom codenames may not appear for manual selection. The plugin’s `post_migrate` signal ensures they are created; you can assign them via shell if needed.
 

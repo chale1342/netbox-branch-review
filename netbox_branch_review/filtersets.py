@@ -2,6 +2,7 @@ import django_filters
 from netbox.filtersets import NetBoxModelFilterSet
 from .models import ChangeRequest
 
+
 class ChangeRequestFilterSet(NetBoxModelFilterSet):
     q = django_filters.CharFilter(method="search", label="Search")
 

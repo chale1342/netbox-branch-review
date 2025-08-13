@@ -4,22 +4,29 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "netbox-branch-review"
-version = "0.1.8"
+version = "0.1.9"
 description = "Branch Review for NetBox"
 requires-python = ">=3.10"
 readme = "README.md"
-authors = [ { name = "Chris Hale" } ]
+authors = [{ name = "Chris Hale" }]
 license = "MIT"
-keywords = ["netbox", "plugin", "change-management", "branch", "review", "approval"]
+keywords = [
+    "netbox",
+    "plugin",
+    "change-management",
+    "branch",
+    "review",
+    "approval",
+]
 classifiers = [
-	"Framework :: Django",
-	"Framework :: Django :: 5",
-	"Programming Language :: Python :: 3",
-	"Programming Language :: Python :: 3.10",
-	"Operating System :: OS Independent",
-	"Intended Audience :: System Administrators",
-	"Topic :: System :: Systems Administration",
-	"Topic :: Internet :: WWW/HTTP"
+    "Framework :: Django",
+    "Framework :: Django :: 5",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+    "Intended Audience :: System Administrators",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Internet :: WWW/HTTP",
 ]
 
 [project.urls]

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented here. The format loosely follows Keep a Changelog and semantic versioning (pre-1.0: minor bumps may include breaking changes).
 
+### [0.1.9] - 2025-08-13
+Fixed
+- Corrected indentation error in `BranchReviewConfig` (version attribute) that caused `IndentationError` on plugin import for 0.1.8 installs.
+- General formatting and consistency cleanups across multiple source files (PEP8 / alignment).
+
 ### [0.1.8] - 2025-08-12
 Fixed
 - Added explicit plugin metadata (author, URL, license, description, min/max version) so details display in NetBox Plugins UI.
