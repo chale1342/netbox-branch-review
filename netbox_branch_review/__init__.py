@@ -4,8 +4,17 @@ import logging
 class BranchReviewConfig(PluginConfig):
     name = "netbox_branch_review"
     verbose_name = "Branch Review"
-    description = "Change management / branch review"
-    version = "0.1.0"
+    # Short one-line summary (appears as Summary/Description in plugin UI)
+    description = "Branch-aware change request & approval workflow"
+    # Keep this in sync with pyproject.toml [project].version
+        version = "0.1.8"  # Updated to version 0.1.8
+    # Metadata for NetBox plugin registry page
+    author = "Chris Hale"
+    author_url = "https://github.com/chale1342/netbox-branch-review"
+    license = "MIT"
+    # Declare supported NetBox core version range (adjust as needed)
+    min_version = "4.3.0"
+    max_version = "5.0"
     base_url = "branch-review"
     default_settings = {
         "require_two_approvals": True,

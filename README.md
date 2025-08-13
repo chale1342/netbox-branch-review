@@ -1,5 +1,5 @@
 # Netbox-Branch-Review
-Branch-aware merge approval system for NetBox that gates branch merges until a Change Request (CR) is approved.
+Branch-aware change request & approval workflow for NetBox that can gate branch merges until a Change Request (CR) is approved.
 
 - Model: [`netbox_branch_review.models.ChangeRequest`](netbox_branch_review/models.py)
 - Status choices: [`netbox_branch_review.choices.CRStatusChoices`](netbox_branch_review/choices.py)
@@ -149,7 +149,7 @@ netbox-branch-review/
 ├── README.md
 └── netbox_branch_review/
     ├── __init__.py
-    ├── plugin.py
+    # (plugin.py not used; configuration lives in __init__.py)
     ├── models.py
     ├── choices.py
     ├── forms.py
@@ -172,7 +172,10 @@ netbox-branch-review/
     │       └── includes/
     │           └── changerequest_header.html
     └── migrations/
-        └── 0001_initial.py
+    ├── 0001_initial.py
+    ├── 0002_add_description.py
+    ├── 0003_merge.py
+    └── 0004_add_comments.py
 ```
 
 ## Notes
