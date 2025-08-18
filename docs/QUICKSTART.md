@@ -1,6 +1,5 @@
-# NetBox Branch Review — Quick Start (with screenshots)
+# NetBox Branch Review — Example
 
-This short tour shows the typical flow.
 
 ## 1) Create a Change Request
 Only Title and Summary are needed; Requested by is optional/auto.

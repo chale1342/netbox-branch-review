@@ -1,15 +1,6 @@
 # Netbox-Branch-Review
 Branch-aware change request & approval workflow for NetBox that can gate branch merges until a Change Request (CR) is approved.
 
-## Features
-- Create and track Change Requests linked to branches
-- One- or two-level approvals (configurable)
-- Merge gate: blocks merges until CR is approved or scheduled
-- Simple UI actions: Approve and Merge from the CR detail page
-- API serializers/viewset for integration
-- Optional peer review action & audit log of approvals / merge events
- - Revoke (undo) approvals before implementation, resetting status to Pending
-
 ## Requirements
 - NetBox 4.x
 - Netbox-Branching plugin for branch operations (the merge gate integrates with it)
