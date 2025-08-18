@@ -1,6 +1,19 @@
 from netbox.forms import NetBoxModelForm
 from .models import ChangeRequest
 from django import forms
+import threading
+
+# Thread-local storage to provide request to forms when the view can't pass it via kwargs
+_req_local = threading.local()
+
+def set_current_request(request):  # used by views
+    try:
+        _req_local.request = request
+    except Exception:
+        _req_local.request = None
+
+def get_current_request():
+    return getattr(_req_local, "request", None)
 
 RISK_CHOICES = [
     ("", "--------"),
@@ -33,7 +46,7 @@ class ChangeRequestForm(NetBoxModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
+        self.request = kwargs.pop("request", None) or get_current_request()
         super().__init__(*args, **kwargs)
         # Ensure branch optional; risk initial blank
         if "risk" in self.fields:
@@ -49,13 +62,22 @@ class ChangeRequestForm(NetBoxModelForm):
     def save(self, commit=True):
         obj = super().save(commit=False)
         # Set requester to current user if available and not already set
-        if (
-            not obj.pk
-            and self.request
-            and self.request.user
-            and self.request.user.is_authenticated
-        ):
-            obj.requested_by = self.request.user
+        if not obj.pk:
+            # Prefer request.user, then thread-local, then NetBox's self.user (ObjectEditView sets this)
+            requester = None
+            req = self.request or get_current_request()
+            try:
+                if req and getattr(req, "user", None):
+                    requester = req.user
+            except Exception:
+                requester = None
+            if requester is None:
+                requester = getattr(self, "user", None)
+            try:
+                if requester and getattr(requester, "is_authenticated", False) and not obj.requested_by_id:
+                    obj.requested_by = requester
+            except Exception:
+                pass
         # Force status to pending on creation
         if not obj.pk:
             from .choices import CRStatusChoices

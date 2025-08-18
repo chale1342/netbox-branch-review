@@ -132,7 +132,7 @@
                 {% endfor %}
               </ul>
               {% if unmerged_changes_count > 20 %}
-                <div class="text-muted" style="margin-top:4px;">… and {{ unmerged_changes_count|add:- 20 }} more</div>
+                <div class="text-muted" style="margin-top:4px;">… and {{ unmerged_changes_count|add:"-20" }} more</div>
               {% endif %}
             {% else %}
               <span class="text-muted">No pending changes.</span>

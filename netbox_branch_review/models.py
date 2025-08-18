@@ -20,7 +20,11 @@ class ChangeRequest(PrimaryModel):
     description = models.CharField(max_length=200, blank=True)
     comments = models.TextField(blank=True)
     requested_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name="change_requests_created"
+    User,
+    on_delete=models.PROTECT,
+    related_name="change_requests_created",
+    null=True,
+    blank=True,
     )
     status = models.CharField(
         max_length=32, choices=CRStatusChoices, default=CRStatusChoices.PENDING

@@ -12,3 +12,4 @@ class ChangeRequestSerializer(serializers.ModelSerializer):
             "object_type", "object_id", "created", "last_updated",
             "approver_1", "approver_1_at", "approver_2", "approver_2_at",
         ]
+    read_only_fields = ["requested_by"]

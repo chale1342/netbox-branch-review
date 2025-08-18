@@ -8,7 +8,7 @@ class BranchReviewConfig(PluginConfig):
     # Short one-line summary (appears as Summary/Description in plugin UI)
     description = "Branch-aware change request & approval workflow"
     # Keep this in sync with pyproject.toml [project].version
-    version = "0.1.9"  # Indentation fix release
+    version = "0.2.0"  # Requested-by optional + stability fixes
     # Metadata for NetBox plugin registry page
     author = "Chris Hale"
     author_url = "https://github.com/chale1342/netbox-branch-review"

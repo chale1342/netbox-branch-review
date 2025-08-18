@@ -1,13 +1,6 @@
 # Netbox-Branch-Review
 Branch-aware change request & approval workflow for NetBox that can gate branch merges until a Change Request (CR) is approved.
 
-- Model: [`netbox_branch_review.models.ChangeRequest`](netbox_branch_review/models.py)
-- Status choices: [`netbox_branch_review.choices.CRStatusChoices`](netbox_branch_review/choices.py)
-- UI views: [`netbox_branch_review.views`](netbox_branch_review/views.py)
-- Merge gate validator: [`netbox_branch_review.validators.require_cr_approved_before_merge`](netbox_branch_review/validators.py)
-- API: [`netbox_branch_review.api.views.ChangeRequestViewSet`](netbox_branch_review/api/views.py), [`netbox_branch_review.api.serializers.ChangeRequestSerializer`](netbox_branch_review/api/serializers.py)
-- Plugin config: [`netbox_branch_review.__init__.BranchReviewConfig`](netbox_branch_review/__init__.py)
-
 ## Features
 - Create and track Change Requests linked to branches
 - One- or two-level approvals (configurable)
@@ -77,6 +70,8 @@ python manage.py sync_change_review --no-peer-group
 - The CR form includes an optional Ticket field for referencing external systems.
 - From the CR page, Approve and Merge using the actions in the header
   - Template: [`templates/.../includes/changerequest_header.html`](netbox_branch_review/templates/netbox_branch_review/includes/changerequest_header.html)
+
+See also: [Quick Tour with screenshots](docs/QUICKSTART.md).
 
 ### Approval & Peer Review Flow
 Config key: `require_two_approvals` (default True)
