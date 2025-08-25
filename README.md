@@ -56,30 +56,25 @@ python manage.py sync_change_review --no-peer-group
 ```
 
 ## Usage
-- Navigate to Plugins → Change Requests (menu declared in [`menu.py`](netbox_branch_review/menu.py))
-- Create a CR (form: [`ChangeRequestForm`](netbox_branch_review/forms.py))
-- The CR form includes an optional Ticket field for referencing external systems.
-- From the CR page, Approve and Merge using the actions in the header
-  - Template: [`templates/.../includes/changerequest_header.html`](netbox_branch_review/templates/netbox_branch_review/includes/changerequest_header.html)
+- Create a new branch as usual, make required new changes
+- Navigate to Branch Review > Change Management
+- Create a CR
+- From the CR page, you can Review & Merge the CR, and then merge the branch
 
-See also: [Quick Tour with screenshots](docs/QUICKSTART.md).
+### Approval and Peer Review
 
-### Approval & Peer Review Flow
-Config key: `require_two_approvals` (default True)
-Self full approval: `allow_self_full_approval` (default True) lets the CR creator (who has approval permission) fully approve in one action even when two approvals are normally required (records both levels in audit with an implicit second approval entry).
+How it works:
+- Two approval mode (default): two distinct approvals are required. If `allow_self_full_approval` is enabled, the CR creator with approval permission may record both levels in one action; both levels are audited.
+- Single approval mode: one approval is enough; repeated approvals by the same user are blocked.
+- Peer review: users with `peer_review_changerequest` can record a peer review for audit and visibility only; it does not change the CR status.
+- Merge: performing a merge sets the CR status to `Implemented`.
 
-| Scenario               | Action 1                                                                      | Action 2                                                                     | Status progression                                                  |
-| ---------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Two approvals required | First approval (different user recorded, or creator self-approval if allowed) | Second approval (must be different user unless self full approval triggered) | Pending → In review → Approved (or direct to Approved if self full) |
-| Single approval mode   | First approval                                                                | (Further approvals blocked for same user)                                    | Pending → Approved                                                  |
+Validation:
+- The merge gate (`require_cr_approved_before_merge` validator) enforces the configured number of approvals and requires the CR status be `Approved` or `Scheduled` before allowing a merge.
 
-Peer Review (optional): A user with only `peer_review_changerequest` can record a peer review before approval. Peer reviews do NOT change status; they are logged for audit & visibility.
-
-Merge sets status to “Implemented”. Duplicate approvals or attempts after final approval are logged and safely ignored.
-
-The merge gate validator [`require_cr_approved_before_merge`](netbox_branch_review/validators.py) enforces:
-- Two approvals when configured
-- Status must be Approved or Scheduled
+Notes:
+- Approvals submitted after final approval or duplicate attempts are logged and ignored.
+- Revokes are possible before implementation (see Revoking Approvals).
 
 ## Permissions & Suggested Groups
 Custom permissions defined on the model: [`ChangeRequest.Meta.permissions`](netbox_branch_review/models.py)
@@ -91,7 +86,7 @@ Custom permissions defined on the model: [`ChangeRequest.Meta.permissions`](netb
 | peer_review_changerequest | Record a peer review (no status change)        |
 | revoke_changerequest      | Revoke existing approvals (pre-implementation) |
 
-Because NetBox’s Group UI currently only lists standard model permissions in the multiselect, custom codenames may not appear for manual selection. The plugin’s `post_migrate` signal ensures they are created; you can assign them via shell if needed.
+Because NetBox’s Group UI currently only lists standard model permissions in the multiselect, custom codenames may not appear for manual selection. The plugin’s `post_migrate` hook ensures they are created; you can assign them via shell if needed.
 
 Suggested groups:
 - Change Managers: `approve_changerequest`, `merge_changerequest` (optionally also `peer_review_changerequest`).
@@ -107,10 +102,7 @@ Check a user’s effective perms:
 python manage.py shell -c "from django.contrib.auth import get_user_model; u=get_user_model().objects.get(username='alice'); print([p for p in sorted(u.get_all_permissions()) if p.startswith('netbox_branch_review.')])"
 ```
 
-## Audit Log
-Each approval, peer review, merge, revoke, or blocked duplicate attempt writes an entry to `ChangeRequestAudit` (displayed on the CR detail page). The last 10 entries render as badges; extend as needed.
-
-### Revoking Approvals (Undo)
+### Revoking Approvals
 Users with `revoke_changerequest` can revert a Change Request back to Pending (prior to implementation). This:
 1. Creates audit entries for each revoked level (L2 then L1) plus a summary revoke_full entry.
 2. Clears `approver_1`, `approver_2` and their timestamps.
