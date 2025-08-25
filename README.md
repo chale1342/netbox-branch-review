@@ -128,41 +128,22 @@ UI: A Revoke Approvals button appears when (a) the user has the permission, (b) 
 
 Note: Expose routes via the NetBox plugin API router as needed. The serializer exposes all CR fields, including ticket.
 
-## Project layout
-```
-netbox-branch-review/
-├── pyproject.toml
-├── README.md
-└── netbox_branch_review/
-    ├── __init__.py
-    # (plugin.py not used; configuration lives in __init__.py)
-    ├── models.py
-    ├── choices.py
-    ├── forms.py
-    ├── filtersets.py
-    ├── tables.py
-    ├── navigation.py
-    ├── menu.py
-    ├── urls.py
-    ├── views.py
-    ├── signals.py
-    ├── validators.py
-    ├── api/
-    │   ├── __init__.py
-    │   ├── serializers.py
-    │   └── views.py
-    ├── templates/
-    │   └── netbox_branch_review/
-    │       ├── changerequest_list.html
-    │       ├── changerequest.html
-    │       └── includes/
-    │           └── changerequest_header.html
-    └── migrations/
-    ├── 0001_initial.py
-    ├── 0002_add_description.py
-    ├── 0003_merge.py
-    └── 0004_add_comments.py
-```
+## Layout
+
+![Change-Request](docs/images/cr-request.png)   
+*Change Request Creation.*
+
+![Change Request Detail](docs/images/cr-list.png)   
+*View list of CRs.*
+
+![Change Request Detail](docs/images/cr-approved.png)   
+*Manager Approval.*
+
+![Change Request Detail](docs/images/cr-merged.png)   
+*Completed CR.*
+
+![Change Request Detail](docs/images/branch-merged.png)   
+*Completed Branch Merge.*
 
 ## Notes
 - The plugin registers the merge gate during `ready()` by calling `register_pre_merge_validator()` if available (see [`__init__.py`](netbox_branch_review/__init__.py)). If the branching plugin is not present, merge enforcement gracefully no-ops, and UI will warn when branch data
